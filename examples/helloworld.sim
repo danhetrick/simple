@@ -1,0 +1,11 @@
+<!--
+	helloworld.sim
+
+	A basic "hello world" program
+-->
+
+<subroutine name="main">
+	global greeting
+	greeting equals "Hello world!"
+	print $greeting
+</subroutine>

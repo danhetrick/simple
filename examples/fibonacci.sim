@@ -1,0 +1,27 @@
+<subroutine name="calculate">
+     stack1 equals $stack2
+     stack2 equals $stack3
+     stack3 equals "$stack1+$stack2"
+     counter equals "$counter+1"
+</subroutine>
+
+<subroutine name="display">
+     print "$counter) $stack3"
+</subroutine>
+
+<subroutine name="main">
+     global stack1 equals 0
+     global stack2 equals 1
+     global stack3 equals 1
+     global counter equals 3
+     global maximum equals 10
+
+     print "1) 0"
+     print "2) 1"
+     print "3) 1"
+
+     while $counter less than or equals $maximum
+          calculate
+          display
+     break
+</subroutine>

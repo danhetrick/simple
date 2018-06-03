@@ -1,0 +1,10 @@
+<subroutine name="greeting" arguments="who,where">
+     local retval equals "Hello to $who in $where!"
+     return $retval
+</subroutine>
+
+<subroutine name="main">
+     global text
+     text equals greeting Dan Detroit
+     print $text
+</subroutine>

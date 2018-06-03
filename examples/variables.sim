@@ -1,0 +1,14 @@
+<!--
+     variables.sim
+     
+     A program that shows how variable names can be stored in a variable.
+-->
+
+<subroutine name="main">
+     global target_variable_name equals "the_target_variable"
+     global the_target_variable equals "this is not the target variable"
+
+     $target_variable_name equals "this is the target variable"
+
+     print $the_target_variable
+</subroutine>

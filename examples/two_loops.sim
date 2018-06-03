@@ -1,0 +1,34 @@
+<!--
+	two_loops.sim
+	
+	Demonstrates pseudo-nested "while" loops
+-->
+
+<subroutine name="first_loop">
+	local counter equals 1
+	prints "First Loop: "
+	while $counter less than or equals 4
+		prints "$counter "
+		counter equals "$counter+1"
+	break
+	print "!"
+</subroutine>
+
+<subroutine name="second_loop">
+	local counter equals 1
+	prints "Second Loop: "
+	while $counter less than or equals 4
+		prints "$counter "
+		counter equals "$counter+1"
+	break
+	print "!"
+</subroutine>
+
+<subroutine name="main">
+	global loops equals 1
+	while $loops less than or equals 4
+		first_loop
+		second_loop
+		loops equals "$loops+1"
+	break
+</subroutine>

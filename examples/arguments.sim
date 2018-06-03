@@ -1,0 +1,40 @@
+<!--
+     arguments.sim
+     
+     A program that calculates and displays the average of three numbers
+     An example of command-line handling
+-->
+
+<subroutine name="usage">
+     print "$ARGV0 NUMBER NUMBER NUMBER"
+     exit 1
+</subroutine>
+
+<subroutine name="handle_commandline">
+     if ARGV1 exists
+          value1 equals $ARGV1
+     else
+          usage
+     end
+     if ARGV2 exists
+          value2 equals $ARGV2
+     else
+          usage
+     end
+     if ARGV3 exists
+          value3 equals $ARGV3
+     else
+          usage
+     end
+</subroutine>
+
+<subroutine name="main">
+     global value1 equals 0
+     global value2 equals 0
+     global value3 equals 0
+     handle_commandline
+     global average
+     average equals "($value1+$value2+$value3)/3"
+     print "The average of $value1, $value2, and $value3 is $average"
+     exit
+</subroutine>

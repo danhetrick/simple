@@ -1,7 +1,9 @@
 # simple
 
 SIMPLE (Simple Interpolated Mark-uP LanguagE) is a procedural, Turing-complete programming language designed to be easy to teach beginners to computer programming.  It uses a two-pronged paradigm:
+
   • Rather than using C's brackets or Python's indentation to delimit code blocks, SIMPLE uses a style derived from HTML and XML:  markup tags. 
+  
   • Unlike other high-level programming languages, SIMPLE strives to be as close to natural English as possible.  Other than the symbols required to do math, for markup tags, and for interpolation, SIMPLE uses no symbolic constructs.  Statement should state, plainly, what they do in English, with a minimum of punctuation or non-numeric symbols;  instead of C's "if(i==3){", which is difficult for non-programmers to read, SIMPLE would use "if $i equals 3", an easier construct to read for non-programmers.
  
 SIMPLE was designed for the "HTML Generation";  that is, people who are familiar with HTML and markup tags, yet are not familiar with programming.  It is not a complete application solution.  SIMPLE is limited by design;  it's designed to be a teaching tool.   sim.pl, the SIMPLE compiler, takes in a SIMPLE program (a specific kind of XML document, detailed below) and compiles it into stand-alone Perl (the output program requires only a default installation of Perl).  The compiler also checks programs for correct syntax, returning the line number of any errors it finds.  It can't detect all errors;  errors involving user or system input are displayed when the compiled program is executed, returning the line number in the original SIMPLE program where the error occurred.  These two features make debugging SIMPLE programs fairly easy;  runtime error messages (which include the line number in the SIMPLE program where the error occurred) are inserted into the compiled program automatically making debugging even easier.

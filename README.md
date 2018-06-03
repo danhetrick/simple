@@ -27,3 +27,4 @@ Limitations include:
    
    • Commands are as close to natural English as possible.  A non-programmer should be able to figure out what a program does by reading its source code.
 
+SIMPLE requires a Perl installation to both compile SIMPLE code and execute the compiled code.

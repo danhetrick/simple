@@ -12,12 +12,11 @@ There are three things this programming language is designed to teach:
 
   • Variables.  Almost every programming language uses this concept. 
   
-  • Interpolation2.  Many common programming languages, like PHP and Perl, use some sort of interpolation system.  Even C/C++ uses one (for an example, see the standard library function printf). 
+  • Interpolation.  Many common programming languages, like PHP and Perl, use some sort of interpolation system.  Even C/C++ uses one (for an example, see the standard library function printf). 
   
-  • Variable Scoping3.  A feature of every major programming language and almost none of the beginner programming languages.
+  • Variable Scoping.  A feature of every major programming language and almost none of the beginner programming languages.
   
-SIMPLE was heavily influenced by two different languages:  Perl and XML.  The interpolation system is borrowed from Perl, allowing variables to be interpolated in strings using the $ sign (see Variables and Interpolation, in the manual).  The overall syntax is borrowed from XML;  all code blocks4 are in the form of XML tags.  I view this language as a blend of the power of string manipulation in Perl with the parse-ability of XML.  Support for regular expressions (also known as a "regex") is not included;  regular expressions are difficult to explain to experienced programmers, and as SIMPLE is a teaching language we don't need to bog down users with them (they can always learn them later).  Likewise, there are only two markup tags users must learn:  import and subroutine.
-SIMPLE strives to be easily read by non-programmers.  To that end, SIMPLE limits its syntax to help users write readable code.
+SIMPLE was heavily influenced by two different languages:  Perl and XML.  The interpolation system is borrowed from Perl, allowing variables to be interpolated in strings using the $ sign (see Variables and Interpolation, in the manual).  The overall syntax is borrowed from XML;  all code blocks are in the form of XML tags.  I view this language as a blend of the power of string manipulation in Perl with the parse-ability of XML.  Support for regular expressions (also known as a "regex") is not included;  regular expressions are difficult to explain to experienced programmers, and as SIMPLE is a teaching language we don't need to bog down users with them (they can always learn them later).  Likewise, there are only two markup tags users must learn:  import and subroutine.  SIMPLE strives to be easily read by non-programmers.  To that end, SIMPLE limits its syntax to help users write readable code.
 
 Limitations include:
 

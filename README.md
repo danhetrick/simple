@@ -39,14 +39,14 @@ If `sim.pl` is ran from the command-line with no arguments, basic usage informat
 	-i(nclude) Includes the original source into the compiled source
 	localhost:~ user$
 
-To compile a **SIMPLE** program, pass it as the only argument to sim.pl.  By default, this will create a new file name `out.pl` which contains the output Perl code.  If you want to write the compiled code to a different file, use the `-o` option.
+To compile a **SIMPLE** program, pass it as the only argument to `sim.pl`.  By default, this will create a new file name `out.pl` which contains the output Perl code.  If you want to write the compiled code to a different file, use the `-o` option.
 
 If any syntax errors in the code are found, the errors are displayed to the user and compilation is aborted.  Where the error was in the program is reported to the user;  however, the line number reported is relative to what subroutine the error is in.  For example, take a look at the following program:
 
-	1 <subroutine name="main">
-	2 	print "This program has an error in it!"
-	3 	this_command_doesnt_exist
-	4 </subroutine>
+	  <subroutine name="main">
+	1 	print "This program has an error in it!"
+	2 	this_command_doesnt_exist
+	  </subroutine>
 
 The command on line 3 (`this_command_doesnt_exist`) will throw an error, as the command, much like its name, doesn't exist.  However, when we try to compile it:
 

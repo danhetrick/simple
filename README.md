@@ -108,8 +108,8 @@ Now, let's look at a more complicated example, showing how double quotes can be 
 
 There are two types of SIMPLE statements:  **commands** and **variable** assignment.  Commands are formatted like so:
 
-╔═══════════════════╦═══╦══════════════╦═════╦═══╗
-║      **COMMAND**      ║ [ ║   **ARGUMENT**   ║ ... ║ ] ║
-╚═══════════════════╩═══╩══════════════╩═════╩═══╝
+	╔═══════════════════╦═══╦══════════════╦═════╦═══╗
+	║      COMMAND      ║ [ ║   ARGUMENT   ║ ... ║ ] ║
+	╚═══════════════════╩═══╩══════════════╩═════╩═══╝
 
 adg

@@ -1,3 +1,7 @@
+![SIMPLE](https://github.com/danhetrick/simple/blob/media/simple_logo.png?raw=true)
+
+# Simple Interpolated Markup Language
+
 # Table of Contents
 
 * [The SIMPLE Code Compiler](#the-simple-code-compiler)

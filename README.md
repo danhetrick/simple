@@ -133,10 +133,29 @@ Variables assigned in the above format have their input interpolated;  that is, 
 	global variable_name equals "target_variable"
 	global target_variable "this is not the target"
 	$variable_name equals "this is the target"
-	 
+
 	<!-- This will print "this is the target" to the console -->
 	print $target_value
 
 # Variables and Interpolation
 
+**SIMPLE** has two variable types:  `local` and `global`.  A variable can contain either a numeric or string value.  **SIMPLE** is loosely typed, meaning that will interpret what to do with a variable depending on context.  All command inputs are interpolated;  this means that, like Perl, we can insert variable values into a string or statement using a special symbol: `$`. 
+
+Variables are marked with a `$`.  For example, assume that we have a variable named `myvar`, with the value `John Doe`.  If we pass the following as an argument to a command, `My name is $myvar` will be interpreted as `My name is John Doe`.
+
+If, after all variable interpolation is complete, a statement consists solely of a mathematical expression6 (i.e., `2+2`, `(2+2)*3`, or `1+((3*4)/2)+5`), then the mathematical expression is "solved" (that is, completed and turned into a value), with the solution replacing original statement.  All mathematical operations can be done using interpolation in **SIMPLE**.  For example, to determine what the average is of 5, 25, and 9, you could try:
+
+	global value1 equals 5
+	global value2 equals 25
+	global value3 equals 9
+	global average
+	average equals "($value1+$value2+$value3)/3"
+
+The variable `average` now contains the correct answer (13).
+
+Variables come in two varieties:  `global` variables and `local` variables.  `global` variables are global in scope, whereas `local` variables are deleted/destroyed at the completion of the current code block.  What this means is that `local` variables are only accessible inside the subroutine that created them, while `global` variables are accessible in any subroutine in the program.
+
+There are several variables that are created automatically, allowing **SIMPLE** programs to have access to the command line.  The built-in variable `ARGC` contains the number of arguments the program was executed with.  Every argument is placed in a variable named `ARGx`, where _x_ is the place of the argument;  for example, the first argument would be `ARG1`, the second `ARG2`, the third `ARG3`, and so on.  The built-in variable `ARG0` contains the filename of the **SIMPLE** program (for more information, see Handling Command-line Arguments, below). 
+
+# Subroutines
 

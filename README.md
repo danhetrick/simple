@@ -1,3 +1,23 @@
+# Table of Contents
+
+* [The SIMPLE Code Compiler](#the-simple-code-compiler)
+* [Example sim.pl Usage](#example-sim.pl-usage)
+* [SIMPLE Markup](#simple-markup)
+* [SIMPLE Syntax](#simple-syntax)
+* [Variables and Interpolation](#variables-and-interpolation)
+* [Subroutines](#subroutines)
+* [Handling Commandline Arguments](#handling-commandline-arguments)
+* [A Fibonacci Generator in SIMPLE](#a-fibonacci-generator-in-simple)
+* [Advanced Topics](#advanced-topics)
+	* [two_loops.sim](#two_loops.sim)
+	* [fibsub.sim](#fibsub.sim)
+	* [variables.sim](#variables.sim)
+	* [new_default.sim](#new_default.sim)
+	* [average.sim](#average.sim)
+	* [fileio.sim](#fileio.sim)
+	* [Debugging By Viewing Compiled Code](#debugging-by-viewing-compiled-code)
+* [SIMPLE Commands](#simple-commands)
+
 # Summary
 
 **SIMPLE** (**S**imple **I**nterpolated **M**ark-u**P** **L**anguag**E**) is a procedural, Turing-complete programming language designed to be easy to teach beginners to computer programming.  It uses a two-pronged paradigm:
@@ -76,7 +96,7 @@ Save this to a file named `helloworld.sim`.  Now, we will compile the code using
 
 You can find this program in the `examples/` directory, named `helloworld.sim`.
 
-# SIMPLE Markup Language
+# SIMPLE Markup
 
 **SIMPLE** uses two markup elements:  `subroutine` and `import`.  HTML/XML style multi-line comments (that is, any text between matching tags `<!--` and `-->`) are supported.
 
@@ -84,7 +104,7 @@ You can find this program in the `examples/` directory, named `helloworld.sim`.
 
 `import` elements are used to "import" other **SIMPLE** program files into a program, much like C/C++'s #include.  `import` elements have no attributes;  they contain a single filename, complete with path.  The contents of an imported file are loaded into memory and compiled;  any `subroutine`s they contain may be called by any subsequent subroutines.  Multiple layers of `import` elements are permitted (that is, an imported file can contain `import` elements, which contains more `import` elements, etc.).
 
-# SIMPLE Code Syntax
+# SIMPLE Syntax
 
 **SIMPLE** Code is multi-line text with either a blank line or a single **SIMPLE** statement, followed by a newline, on each line.  XML-style multi-line comments can also be used (any code between `<!--` and `-->` will be ignored).
 
@@ -482,3 +502,112 @@ Save this to a file name `new_default.sim`.  Then compile and run it:
 	localhost:~ user$ 
 
 You can find this program in the `examples/` folder, named `new_default.sim`.
+
+## average.sim
+
+You can use the `input` command to get user input from the command line.  For example, let's write a program that gets three numbers from the user and calculates their average.  Open a new text file, and type into it:
+
+	<subroutine name="main">
+		global number1
+		global number2
+		global number3
+		global average
+
+		print "Program to calculate the average of three numbers"
+		<!-- Get the first number -->
+		prints "Input number 1: "
+		input to number1
+
+		<!-- Get the second number -->
+		prints "Input number 2: "
+		input to number2
+
+		<!-- Get the third number -->
+		prints "Input number 3: "
+		input to number3
+
+		<!-- Calculate the average -->
+		average equals "($number1+$number2+$number3)/3"
+		print "The average of $number1, $number2, and $number3 is $average"
+	</subroutine>
+
+Save this to a file name `average.sim`.  Then compile and run it:
+
+	localhost:~ user$ perl sim.pl -o average.pl average.sim 
+	localhost:~ user$ perl average.pl
+	Program to calculate the average of three numbers
+	Input number 1: 2
+	Input number 2: 4
+	Input number 3: 6
+	The average of 2, 4, and 6 is 4
+	localhost:~ user$
+
+You can find this program in the `examples/` folder, named `average.sim`.
+
+## fileio.sim
+
+**SIMPLE** also features file input-output features (file I/O).    Let's write a program that shows off these features.  First, we'll create a file and write some text to it, copy it, and rename the copy:
+
+	<subroutine name="main">
+		<!-- Create a file, and write some text to it -->
+		write "This is a text file" to "myfile.txt"
+
+		 <!-- Copy the file to a new file named "copy.txt" -->
+		 copy "myfile.txt" to "copy.txt"
+
+		 <!-- Move "copy.txt" to a new file named "copycopy.txt" –>
+		 move "copy.txt" to "copycopy.txt"
+
+		 <!-- Load the copied file into memory and print the contents -->
+		global contents
+		contents equals read "copycopy.txt"
+		print $contents
+	</subroutine>
+
+You can find this program in the `examples/` folder, named `fileio.sim`.
+
+## Debugging By Viewing Compiled Code
+
+For assistance in debugging, there are several commandline arguments you can use.  For example, let's use the following code (this code can be found in the `examples/` folder, named `helloworld.sim`):
+
+	<subroutine name="main">
+		global greeting
+		greeting equals "Hello world!"
+		print $greeting
+	</subroutine>
+
+We can compile this to Perl and strip the executor code , using the `--executor` option to strip executor code and the `--stdout` option to print the compiled code to STDOUT, like so:
+
+	localhost:~ user$ perl sim.pl --stdout --executor examples/helloworld.sim
+	create_scalar("greeting","");
+	if(scalar_exists(i('greeting'))){
+		change_scalar_value(i('greeting'),i('Hello world!'));
+	} else {
+		print "Error in 'main' on line 2: Variable 'greeting' doesn't exist.\n";
+		exit 1;
+	}
+	print i('$greeting')."\n";
+	END_BLOCK_MAIN:
+	destroy_locals();
+	localhost:~ user$
+
+This is what the given **SIMPLE** code compiles into.  Using the `--include` option, you can inject the original source code into the compiled code, in the form of comments:
+
+	localhost:~ user$ perl sim.pl --stdout –executor --include examples/helloworld.sim
+	#  'main' line 1: variable greeting
+	create_scalar("greeting","");
+	#  'main' line 2: greeting equals "Hello world!"
+	if(scalar_exists(i('greeting'))){
+		change_scalar_value(i('greeting'),i('Hello world!'));
+	} else {
+		print "Error in 'main' on line 2: Variable 'greeting' doesn't exist.\n";
+		exit 1;
+	}
+	#  'main' line 3: print $greeting
+	print i('$greeting')."\n";
+	END_BLOCK_MAIN:
+	destroy_locals();
+	localhost:~ user$
+
+# SIMPLE Commands
+

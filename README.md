@@ -86,4 +86,30 @@ You can find this program in the `examples/` directory, named `helloworld.sim`.
 
 # SIMPLE Code Syntax
 
+**SIMPLE** Code is multi-line text with either a blank line or a single **SIMPLE** statement, followed by a newline, on each line.  XML-style multi-line comments can also be used (any code between `<!--` and `-->` will be ignored).
 
+There are 24 built-in SIMPLE commands.  Each one is issued as a series of tokens, separated by whitespace.  If a token contains whitespace in its value, it can be contained in double quotes.  For example, if we were to split the string `this is a test` into tokens, it would split into four (4) tokens:
+
+	Token 1:  this
+	Token 2:  is
+	Token 3:  a
+	Token 4:  test
+
+Now, let's look at a more complicated example, showing how double quotes can be used to contain complete tokens.
+
+	this is "a more complicated" example
+
+	This breaks down into four (4) tokens:
+
+	Token 1:  this
+	Token 2:  is
+	Token 3:  a more complicated
+	Token 4:  example
+
+There are two types of SIMPLE statements:  **commands** and **variable** assignment.  Commands are formatted like so:
+
+╔═══════════════════╦═══╦══════════════╦═════╦═══╗
+║      **COMMAND**      ║ [ ║   **ARGUMENT**   ║ ... ║ ] ║
+╚═══════════════════╩═══╩══════════════╩═════╩═══╝
+
+adg

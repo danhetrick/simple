@@ -8,7 +8,7 @@
 * [Subroutines](#subroutines)
 * [Handling Commandline Arguments](#handling-commandline-arguments)
 * [A Fibonacci Generator in SIMPLE](#a-fibonacci-generator-in-simple)
-* [Advanced Topics](#advanced-topics)
+* [Advanced Topics](#advanced-topics) - All code can be found in the examples/ directory
 	* [two_loops.sim](#two_loops.sim)
 	* [fibsub.sim](#fibsub.sim)
 	* [variables.sim](#variables.sim)
@@ -17,6 +17,10 @@
 	* [fileio.sim](#fileio.sim)
 	* [Debugging By Viewing Compiled Code](#debugging-by-viewing-compiled-code)
 * [SIMPLE Commands](#simple-commands)
+	* [Miscellaneous](#miscellaneous)
+	* [Variable Assignment](#variable-assignment)
+	* [Flow Control](#flow-control)
+* [License](#license)
 
 # Summary
 
@@ -102,7 +106,7 @@ You can find this program in the `examples/` directory, named `helloworld.sim`.
 
 `subroutine` elements contain **SIMPLE** Code (see below), and allow blocks of code to be independently executed.  Each `subroutine` element has one mandatory attribute (`name`) and one optional attribute (`arguments`).  The `name` attribute defines what the `subroutine`'s name is;  each `subroutine` name must be unique in the program.  The optional `arguments` attribute sets what arguments the `subroutine` will take.  This is set as a list of names:  one name for each argument, separated by commas.  For example, if you wanted a `subroutine` to take two arguments, the first named `one` and the second named `second`, you would use `arguments="one,second"`.  When executed, a variable is created for each argument containing that argument's value;  these can be used just like any other variable in interpolation.  Thus, in the previous example, the argument one can be referenced with `$one`, the second with `$second`, and so on.  These argument variables are destroyed (that is, removed from the variable table) at the conclusion of the `subroutine`.  Every **SIMPLE** program must contain a `subroutine` named `main`;  this is the "entry point" for the program, and the `subroutine` that is executed by default (this can be changed with the compiler option `-d`).  A subroutine must be defined with a `subroutine` element before it can be used in another subroutine;  that is, like C/C++, the `subroutine` must be written first and before any subroutine that calls it.
 
-`import` elements are used to "import" other **SIMPLE** program files into a program, much like C/C++'s #include.  `import` elements have no attributes;  they contain a single filename, complete with path.  The contents of an imported file are loaded into memory and compiled;  any `subroutine`s they contain may be called by any subsequent subroutines.  Multiple layers of `import` elements are permitted (that is, an imported file can contain `import` elements, which contains more `import` elements, etc.).
+`import` elements are used to "import" other **SIMPLE** program files into a program, much like C/C++'s `#include`.  `import` elements have no attributes;  they contain a single filename, complete with path.  The contents of an imported file are loaded into memory and compiled;  any `subroutine`s they contain may be called by any subsequent subroutines.  Multiple layers of `import` elements are permitted (that is, an imported file can contain `import` elements, which contains more `import` elements, etc.).
 
 # SIMPLE Syntax
 
@@ -132,7 +136,7 @@ There are two types of SIMPLE statements:  **commands** and **variable** assignm
 	║      COMMAND      ║ [ ║   ARGUMENT   ║ ... ║ ] ║
 	╚═══════════════════╩═══╩══════════════╩═════╩═══╝
 
-Each **SIMPLE** command has a different number of arguments that must go in the right order.  This includes built-in commands (such as `print` and `exit`) as well as user-written subroutines.  See SIMPLE Commands, below.
+Each **SIMPLE** command has a different number of arguments that must go in the right order.  This includes built-in commands (such as `print` and `exit`) as well as user-written subroutines.  See [SIMPLE Commands](#simple-commands), below.
 
 Variable assignment statements set a variable's value by performing some operation, and they're formatted like so:
 
@@ -175,7 +179,7 @@ The variable `average` now contains the correct answer (13).
 
 Variables come in two varieties:  `global` variables and `local` variables.  `global` variables are global in scope, whereas `local` variables are deleted/destroyed at the completion of the current code block.  What this means is that `local` variables are only accessible inside the subroutine that created them, while `global` variables are accessible in any subroutine in the program.
 
-There are several variables that are created automatically, allowing **SIMPLE** programs to have access to the command line.  The built-in variable `ARGC` contains the number of arguments the program was executed with.  Every argument is placed in a variable named `ARGx`, where _x_ is the place of the argument;  for example, the first argument would be `ARG1`, the second `ARG2`, the third `ARG3`, and so on.  The built-in variable `ARG0` contains the filename of the **SIMPLE** program (for more information, see Handling Command-line Arguments, below). 
+There are several variables that are created automatically, allowing **SIMPLE** programs to have access to the command line.  The built-in variable `ARGC` contains the number of arguments the program was executed with.  Every argument is placed in a variable named `ARGx`, where _x_ is the place of the argument;  for example, the first argument would be `ARG1`, the second `ARG2`, the third `ARG3`, and so on.  The built-in variable `ARG0` contains the filename of the **SIMPLE** program (for more information, see [Handling Commandline Arguments](#handling-commandline-arguments), below). 
 
 # Subroutines
 
@@ -354,7 +358,7 @@ You can find this program in the `examples/` directory, named `fibonacci.sim`.
 
 Note that it's been said previously that `if` and `while` statements can't be nested.  While that is true, there are ways around this limitation.  Each subroutine can have their own, un-nested `if` and `while` statements;  so, you can have a `if` or `while` block that calls multiple subroutines, each with their own `if` and `while` statements.
 
-Here's an example.  Let's write a program with a while loop that runs two other loops (contained in subroutines):
+Here's an example.  Let's write a program with a `while` loop that runs two other `while` loops (contained in subroutines):
 
 	<subroutine name="first_loop">
 		local counter equals 1
@@ -820,7 +824,167 @@ Variable assignment commands take the form of "VARIABLE equals COMMAND ARGUMENT(
 
 ## Flow Control
 
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ if               ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                           if var1 exists ║
+	║                  ║                              if $var1 greater than $var2 ║
+	║                  ║                    if $var1 greater than or equals $var2 ║
+	║                  ║                                 if $var1 less than $var2 ║
+	║                  ║                       if $var1 less than or equals $var2 ║
+	║                  ║                                    if $var1 equals $var2 ║
+	║                  ║                                  if $var1 contains $var2 ║
+	║                  ║                                    if $var1 is not $var2 ║
+	║                  ║                                     if $var1 is a number ║
+	║                  ║                                     if $var2 is a string ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                              1 (variable name, "exists") ║
+	║                  ║                                                          ║
+	║                  ║                                 3 (data, "equals", data) ║
+	║                  ║                                                          ║
+	║                  ║             4 (data, "is" or "greater" or "less" or "a", ║
+	║                  ║           "then" or "not", data or "number" or "string") ║
+	║                  ║                                                          ║
+	║                  ║              6 (data, "greater" or "less", "than", "or", ║
+	║                  ║                                          "equals", data) ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║  Begins an "if" block.  This value with return true (and ║
+	║                  ║     then execute the code in the "if" block) if the app- ║
+	║                  ║   riate condition is met. The 2 argument option requires ║
+	║                  ║   a variable name (without the $), and will return false ║
+	║                  ║       if a variable with that name does not exist. The 3 ║
+	║                  ║          argument option requires a data value, the word ║
+	║                  ║  "contains", and another data value; it will return true ║
+	║                  ║     if the data values are identical, or the second data ║
+	║                  ║      value contains the first data value. The 4 argument ║
+	║                  ║        option requires a data value, either "greater" or ║
+	║                  ║   "less", "than", and another data value; it will return ║
+	║                  ║     true if the first data value is greater than or less ║
+	║                  ║   than the second data value. The 6 argument option req- ║
+	║                  ║  uires a data value, either "greater" or "less", "than", ║
+	║                  ║   "or", "equals" and a second data value; it will return ║
+	║                  ║      true if the fist value is greater than or less than ║
+	║                  ║        or equal to the second value. Code following this ║
+	║                  ║ command, until the following "end" command (or an "else" ║
+	║                  ║             command, if branching) will only be executed ║
+	║                  ║                           if the statement returns true. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
 
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ end              ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                                      end ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                                                        0 ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║        Ends an "if" block.  If there is no matching "if" ║
+	║                  ║                block, the compiler will throw and error. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
 
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ else             ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                                     else ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                                                        0 ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║    Branches an "if" statement; the code following (until ║
+	║                  ║          the "end" command) will be executed if the "if" ║
+	║                  ║                                 statement returns false. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
 
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ while            ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                        while var1 exists ║
+	║                  ║                           while $var1 greater than $var2 ║
+	║                  ║                 while $var1 greater than or equals $var2 ║
+	║                  ║                              while $var1 less than $var2 ║
+	║                  ║                    while $var1 less than or equals $var2 ║
+	║                  ║                                    if $var1 equals $var2 ║
+	║                  ║                               while $var1 contains $var2 ║
+	║                  ║                                 while $var1 is not $var2 ║
+	║                  ║                                  while $var1 is a number ║
+	║                  ║                                  while $var2 is a string ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                              1 (variable name, "exists") ║
+	║                  ║                                                          ║
+	║                  ║                                 3 (data, "equals", data) ║
+	║                  ║                                                          ║
+	║                  ║             4 (data, "is" or "greater" or "less" or "a", ║
+	║                  ║           "then" or "not", data or "number" or "string") ║
+	║                  ║                                                          ║
+	║                  ║              6 (data, "greater" or "less", "than", "or", ║
+	║                  ║                                          "equals", data) ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║     Begins a "while" block.  This value with return true ║
+	║                  ║  (and execute the code in the "while" block) if the app- ║
+	║                  ║   riate condition is met. The 2 argument option requires ║
+	║                  ║   a variable name (without the $), and will return false ║
+	║                  ║       if a variable with that name does not exist. The 3 ║
+	║                  ║          argument option requires a data value, the word ║
+	║                  ║  "contains", and another data value; it will return true ║
+	║                  ║     if the data values are identical, or the second data ║
+	║                  ║      value contains the first data value. The 4 argument ║
+	║                  ║        option requires a data value, either "greater" or ║
+	║                  ║   "less", "than", and another data value; it will return ║
+	║                  ║     true if the first data value is greater than or less ║
+	║                  ║   than the second data value. The 6 argument option req- ║
+	║                  ║  uires a data value, either "greater" or "less", "than", ║
+	║                  ║   "or", "equals" and a second data value; it will return ║
+	║                  ║      true if the fist value is greater than or less than ║
+	║                  ║        or equal to the second value. Code following this ║
+	║                  ║   command, until the following "break" command will loop ║
+	║                  ║                   as long as the statement returns true. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
 
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ break            ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                                    break ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                                                        0 ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║   Ends a "while" block.  If there is no matching "while" ║
+	║                  ║                 block, the compiler will throw an error. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
+
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ exit             ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                                     exit ║
+	║                  ║                                                   exit 1 ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║                1 (optional; the error code to exit with) ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║           Exits a program, using an optional error code. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
+
+	╔══════════════════╦══════════════════════════════════════════════════════════╗
+	║ return           ║ ######################################################## ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Syntax           ║                                                   return ║
+	║                  ║                                                 return 1 ║
+	║                  ║                             return "string return value" ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Arguments        ║   0 or 1 (the value for a subroutine to return if called ║
+	║                  ║                                in a variable assignment) ║
+	╠══════════════════╬══════════════════════════════════════════════════════════╣
+	║ Description      ║   If called in a subroutine, if called with an argument, ║
+	║                  ║      sets the value that the subroutine will return with ║
+	║                  ║     if called in variable assignment, and exits the sub- ║
+	║                  ║    routine.  If called without an argument, either exits ║
+	║                  ║      the subroutine, or sets the return value to nothing ║
+	║                  ║                                and exits the subroutine. ║
+	╚══════════════════╩══════════════════════════════════════════════════════════╝
+
+# License
+
+Copyright (c) 2018, Dan Hetrick All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

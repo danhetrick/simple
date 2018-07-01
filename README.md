@@ -159,3 +159,326 @@ There are several variables that are created automatically, allowing **SIMPLE** 
 
 # Subroutines
 
+**SIMPLE** subroutines allow each program to expand the basic, built-in commands.  Calling a subroutine is the same as calling any **SIMPLE** command:  that is, the subroutine's name, followed by arguments to the subroutine.
+
+	╔══════════════════════╦═══╦════════════════════╦═════╦═══╗
+	║      SUBROUTINE      ║ [ ║      ARGUMENT      ║ ... ║ ] ║
+	╚══════════════════════╩═══╩════════════════════╩═════╩═══╝
+
+If we're assigning a variable a value from a subroutine, we use the same syntax as when we assign a variable from a command:
+
+	╔════════════════════╦════════╦══════════════════════╦════════════════════╦═════╗
+	║      VARIABLE      ║ equals ║      SUBROUTINE      ║      ARGUMENT      ║ […] ║
+	╚════════════════════╩════════╩══════════════════════╩════════════════════╩═════╝
+
+For example, let's create a subroutine that will create a custom greeting, depending on what arguments are passed to the subroutine.
+
+	<subroutine name="greeting" arguments="who,where">
+		global retval equals "Hello to $who in $where!" 
+		return $retval
+	</subroutine>
+
+Our subroutine `greeting` requires two arguments:  `who` (the person to greet) and `where` (where the person to greet is located).  Calling our new subroutine is simple!  `greeting requires` two arguments, so any call with less (or more) arguments will fail with an error.  Let's use our new subroutine to say hello to Dan in Detroit, in the main subroutine of the program:
+
+	<subroutine name="greeting" arguments="who,where">
+		local retval equals "Hello to $who in $where!"
+		return $retval
+	</subroutine>
+
+	<subroutine name="main">
+		global text
+		text equals greeting Dan Detroit
+		print $text
+	</subroutine>
+
+If we save this to `greeting.sim` and use `sim.pl` to compile and run this program, our greeting is printed to the console!
+
+	localhost:~ user$ perl sim.pl -o greeting.pl greeting.sim
+	localhost:~ user$ perl greeting.pl
+	Hello to Dan in Detroit!
+	localhost:~ user$
+
+You can find this program in the `examples/` directory, named `greeting.sim`.
+
+# Handling Commandline Arguments
+
+As an example of commandline handling, let's modify the "average" program we wrote in Variables and Interpolation to accept a variable list of three numbers.  First, we'll write a subroutine to handle our commandline arguments, and another to display usage information and exit:
+
+	<subroutine name="usage">
+		print "$ARGV0 NUMBER NUMBER NUMBER"
+		exit 1
+	</subroutine>
+
+	<subroutine name="handle_commandline">
+		if ARGV1 exists
+			value1 equals $ARGV1
+		else
+			usage
+		end
+
+		if ARGV2 exists
+			value2 equals $ARGV2
+		else
+			usage
+		end
+
+		if ARGV3 exists
+			value3 equals $ARGV3
+		else
+			usage
+		end
+	</subroutine>
+
+This looks for three command-line arguments, and if they aren't found, the program will display usage information and exit with an error.  Now that we've got our commandline handled, let's do what we came here to do:  get an average of three numbers and display it:
+
+	<subroutine name="main">
+		global value1 equals 0
+		global value2 equals 0
+		variable value3 equals 0
+		handle_commandline
+		global average
+		average equals "($value1+$value2+$value3)/3"
+		print "The average of $value1, $value2, and $value3 is $average"
+		exit
+	</subroutine>
+
+You can find this program in the `examples/` directory, named `arguments.sim`.
+
+# A Fibonacci Sequence Generator in SIMPLE
+
+As an example, let's write a Fibonacci Sequence generator in SIMPLE.  The formula to calculate the sequence is, well, simple:  the first two iterations of the sequence are 0 and 1.  Every iteration after that is the product of the two previous iterations.
+
+First, we need to create some variables.  These will keeps track of the last two values, so the current iteration can be calculated;  one variable (`counter`) will also be used to keep track of how many iterations we've calculated.  We'll start our counter at "3" because we've already calculated the first three iterations of the sequence.  We'll also create a variable to keep track of how many iterations we're going to generate (`maximum`);  by default, we'll set this to "10" so we calculate the first 10 iterations of the sequence.  After that, well display the first three iterations:
+
+	global stack1 equals 0
+	global stack2 equals 1
+	global stack3 equals 1
+	global counter equals 3
+	global maximum equals 10
+	print "1) 0"
+	print "2) 1"
+	print "3) 1"
+
+Now, let's write a subroutine to calculate the next iteration of the sequence, and a subroutine to display the current iteration:
+
+	<subroutine name="calculate">
+		<!-- Shift the variables "down" -->
+		stack1 equals $stack2
+		stack2 equals $stack3
+		<!-- Calculate the next iteration -->
+		stack3 equals "$stack1+$stack2"
+		<!-- Increment the counter -->
+		counter equals "$counter+1"
+	</subroutine>
+
+	<subroutine name="display">
+		print "$counter) $stack3"
+	</subroutine>
+
+With that out of the way, let's write a while loop to run the calculate subroutine the desired number of times:
+
+	while $counter less than or equals $maximum
+		calculate
+		display
+	break
+
+Now, we put it all together:  our main code will go in the `main` subroutine while our new subroutines will be placed before the `main` subroutine:
+
+	<subroutine name="calculate">
+		<!-- Shift the variables "down" -->
+		stack1 equals $stack2
+		stack2 equals $stack3
+		<!-- Calculate the next iteration -->
+		stack3 equals "$stack1+$stack2"
+		<!-- Increment the counter -->
+		counter equals "$counter+1"
+	</subroutine>
+
+	<subroutine name="main">
+		global stack1 equals 0
+		global stack2 equals 1
+		global stack3 equals 1
+		global counter equals 3
+		global maximum equals 10
+		print "1) 0"
+		print "2) 1"
+		print "3) 1"
+
+	    while $counter less than or equals $maximum
+	    	calculate
+	    	display
+	    break
+	</subroutine>
+
+Save this to a file named `fibonacci.sim`, compile and run it:
+
+	localhost:~ user$ perl sim.pl -o fibonacci.pl fibonacci.sim
+	localhost:~ user$ perl fibonacci.pl
+	1) 0
+	2) 1
+	3) 1
+	4) 2
+	5) 3
+	6) 5
+	7) 8
+	8) 13
+	9) 21
+	10) 34
+	localhost:~ user$
+
+You can find this program in the `examples/` directory, named `fibonacci.sim`.
+
+# Advanced Topics
+
+## two_loops.sim
+
+Note that it's been said previously that `if` and `while` statements can't be nested.  While that is true, there are ways around this limitation.  Each subroutine can have their own, un-nested `if` and `while` statements;  so, you can have a `if` or `while` block that calls multiple subroutines, each with their own `if` and `while` statements.
+
+Here's an example.  Let's write a program with a while loop that runs two other loops (contained in subroutines):
+
+	<subroutine name="first_loop">
+		local counter equals 1
+		prints "First Loop: "
+		while $counter less than or equals 4
+			prints "$counter "
+			counter equals "$counter+1"
+		break
+		print "!"
+	</subroutine>
+
+	<subroutine name="second_loop">
+		local counter equals 1
+		prints "Second Loop: "
+		while $counter less than or equals 4
+			prints "$counter "
+			counter equals "$counter+1"
+		break
+		print "!"
+	</subroutine>
+
+	<subroutine name="main">
+		global loops equals 1
+		while $loops less than or equals 4
+			first_loop
+			second_loop
+			loops equals "$loops+1"
+		break
+	</subroutine>
+
+Save this to a file name `two_loops.sim`.  Then compile and run it:
+
+	localhost:~ user$ perl sim.pl -o two_loops.pl two_loops.sim
+	localhost:~ user$ perl two_loops.pl
+	First Loop: 1234!
+	Second Loop: 1234!
+	First Loop: 1234!
+	Second Loop: 1234!
+	First Loop: 1234!
+	Second Loop: 1234!
+	First Loop: 1234!
+	Second Loop: 1234!
+	localhost:~ user$ 
+
+You can find this program in the `examples/` folder, named `two_loops.sim`.
+
+## fibsub.sim
+
+Subroutines can return different values, depending on their input or code.  Using our Fibonacci Sequence example, let's write a subroutine that calculates a given iteration of the sequence and returns it:
+
+	<subroutine name="fibonacci" arguments="iteration">
+		<!-- First, let's create some local variables -->
+		local s1 equals 0
+		local s2 equals 1
+		local s3 equals 1
+		local counter equals 3
+		local result equals 0
+
+		<!-- Since we already know the first three iterations (0,1,1), let's return those iterations without calculating them -->
+		if $iteration equals 1
+			return 0
+		end
+
+		if $iteration equals 2
+			return 1
+		end
+
+		if $iteration equals 3
+			return 1 
+		end
+
+		<!-- Now we will generate the sequence up to the desired iteration -->
+		while $counter less than $iteration
+			counter equals "$counter+1"
+			s1 equals $s2
+			s2 equals $s3
+			s3 equals "$s1+$s2"
+		break
+
+		<!-- Now, let's return our result! -->
+		return $s3
+	</subroutine>
+
+Using our new subroutine is easy!  Just call the sub, using the iteration you want to find as the first argument.  For example, to find the 50th iteration of the sequence, you'd use:
+
+	<subroutine name="main">
+		<!-- Calculate and display the 50th iteration of the sequence -->
+		global fiftieth_iteration
+		fiftieth_iteration equals fibonacci 50
+		print $fiftieth_iteration
+	</subroutine>
+
+Please note that this subroutine does _no_ error checking.  It will return incorrect values if the iteration requested is less than one, for example.
+
+You can find this program in the `examples/ folder`, named `fibsub.sim`.
+
+## variables.sim
+
+Variable names can also be contained and referenced in variables;  that is, variable assignment commands have their input interpolated.  For an example, let's write a program where we change a variable's value by referencing it with a variable:
+
+	<subroutine name="main">
+
+	     <!-- Create a variable, and set its value to a short phrase -->
+	     global the_target_variable equals "this is not the target variable"
+
+	     <!-- Create a variable, and set its value to the target variable's name -->
+	     global target_variable_name equals "the_target_variable"
+
+	     <!-- Change the phrase in "the_target_variable" to a new value
+	     We use the name stored in "target_variable_name" -->
+	     $target_variable_name equals "this is the target variable"
+
+	     <!-- Print the phrase stored in "the_target_value" -->
+	     print $the_target_variable
+
+	</subroutine>
+
+Save this to a file name `variables.sim`.  Then compile and run it:
+
+	localhost:~ user$ perl sim.pl -o variables.pl variables.sim
+	localhost:~ user$ perl variables.pl
+	this is the target variable
+	localhost:~ user$ 
+
+You can find this program in the `examples/` folder, named `variables.sim`.
+
+## new_default.sim
+
+By default, the "entry point" in a **SIMPLE** program (that is, the subroutine that is automatically executed when the program is ran) is `main`.  However, using the `-d` option in the **SIMPLE** compiler can be used to define a different subroutine.  Let's write a program that illustrates this:
+
+	<subroutine name="main">
+		<!-- This will never be executed -->
+		print "This is the main subroutine!"
+	</subroutine>
+
+	<subroutine name="other">
+		print "This is the other subroutine!"
+	</subroutine>
+
+Save this to a file name `new_default.sim`.  Then compile and run it:
+
+	localhost:~ user$ perl sim.pl -d other -o new_default.pl new_default.sim
+	localhost:~ user$ perl new_default.pl
+	This is the other subroutine!
+	localhost:~ user$ 
+
+You can find this program in the `examples/` folder, named `new_default.sim`.

@@ -112,4 +112,31 @@ There are two types of SIMPLE statements:  **commands** and **variable** assignm
 	║      COMMAND      ║ [ ║   ARGUMENT   ║ ... ║ ] ║
 	╚═══════════════════╩═══╩══════════════╩═════╩═══╝
 
-adg
+Each **SIMPLE** command has a different number of arguments that must go in the right order.  This includes built-in commands (such as `print` and `exit`) as well as user-written subroutines.  See SIMPLE Commands, below.
+
+Variable assignment statements set a variable's value by performing some operation, and they're formatted like so:
+
+	╔════════════════════╦══════════╦═════════════════════╗
+	║      VARIABLE      ║ OPERATOR ║      STATEMENT      ║
+	╚════════════════════╩══════════╩═════════════════════╝
+
+**SIMPLE** features only one variable assignment operator:  `equals`.  This is used when assigning a value to a variable, or on variable creation (with one exception:  when creating a variable, it _cannot_ use a subroutine's return value as its initial value).
+
+There are six (6) built-in variable assignment commands: `lowercase`, `uppercase`, `read`, `binread`, `ascii`, and `character`. These commands can't be called directly;  they must be assigning a variable's value (that is, in a `VARIABLE equals` statement).  These use the following format:
+
+	╔════════════════════╦════════╦═══════════════════╦════════════════════╦═══════════╗
+	║      VARIABLE      ║ equals ║      COMMAND      ║      ARGUMENT      ║    […]    ║
+	╚════════════════════╩════════╩═══════════════════╩════════════════════╩═══════════╝
+
+Variables assigned in the above format have their input interpolated;  that is, the statement in the above space marked VARIABLE is interpolated.  This allows variable names to be contained in other variables.  For example:
+
+	global variable_name equals "target_variable"
+	global target_variable "this is not the target"
+	$variable_name equals "this is the target"
+	 
+	<!-- This will print "this is the target" to the console -->
+	print $target_value
+
+# Variables and Interpolation
+
+

@@ -417,7 +417,8 @@ Subroutines can return different values, depending on their input or code.  Usin
 		local counter equals 3
 		local result equals 0
 
-		<!-- Since we already know the first three iterations (0,1,1), let's return those iterations without calculating them -->
+		<!-- Since we already know the first three iterations (0,1,1),
+		     let's return those iterations without calculating them -->
 		if $iteration equals 1
 			return 0
 		end

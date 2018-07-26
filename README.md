@@ -53,7 +53,8 @@ The **SIMPLE** Code Compiler is a Perl program named `sim.pl`.  All **SIMPLE** p
 
 If `sim.pl` is ran from the command-line with no arguments, basic usage information is displayed:
 
-	localhost:~ user$ perl sim.pl SIMPLE Code Compiler 0.00154 (dragon)
+	localhost:~ user$ perl sim.pl
+	SIMPLE Code Compiler 0.00154 (dragon)
 	Usage: sim.pl [OPTIONS] FILENAME
 	Options:
 	-h(elp) Display this text
